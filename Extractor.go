@@ -85,7 +85,7 @@ func ExtractLines(filePath string, start int, end int) (string, error) {
 }
 
 func main() {
-	code, err := ExtractLines("C:\\Users\\chsan\\OneDrive\\Desktop\\CodeLabs\\College_Labs\\fileEmployee.cpp", 1010, 1000)
+	code, err := ExtractLines("...filepath...", 1010, 1000)
 	if err != nil {
 		panic(err)
 	}
