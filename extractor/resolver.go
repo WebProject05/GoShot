@@ -8,7 +8,6 @@ import (
 	"strings"
 )
 
-
 func validatePath(path string) (string, error) {
 	info, err := os.Stat(path)
 	if err != nil {
@@ -28,7 +27,7 @@ func ResolveFilePath(input string) (string, error) {
 		return validatePath(input)
 	}
 
-	matches := []string{}   // Keep track of all the dupicate fils if exist
+	matches := []string{} // Keep track of all the dupicate fils if exist
 
 	cwd, err := os.Getwd()
 	if err != nil {
