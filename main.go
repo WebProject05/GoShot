@@ -2,7 +2,6 @@ package main
 
 import (
 	"fmt"
-
 	"goshot/extractor"
 )
 
@@ -24,4 +23,17 @@ func main() {
 	}
 
 	fmt.Println("\nExtractor working perfectly.")
+
+	path, err := extractor.ResolveFilePath(filename)
+	if err != nil {
+		panic(err)
+	}
+
+	lang, err := extractor.DetectLanguage(path)
+	if err != nil {
+		panic(err)
+	}
+
+	fmt.Println("Detected language:", lang)
+
 }
