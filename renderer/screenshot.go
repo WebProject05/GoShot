@@ -24,7 +24,7 @@ func RenderToImage(codeHTML string, filename string, output string) error {
 
 	err := chromedp.Run(ctx,
 		chromedp.EmulateViewport(1400, 900,
-			chromedp.EmulateScale(2.0), // retina quality
+			chromedp.EmulateScale(3.0), // retina quality
 		),
 
 		chromedp.Navigate(htmlURL),
@@ -115,7 +115,7 @@ func wrapHTML(codeHTML string, filename string) string {
 		/* Code styling */
 		pre {
 			margin: 0;
-			font-size: 14px;
+			font-size: 15px;
 			line-height: 1.6;
 			white-space: pre-wrap;
 			word-break: break-word;
