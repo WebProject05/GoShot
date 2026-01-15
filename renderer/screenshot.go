@@ -23,8 +23,13 @@ func RenderToImage(codeHTML string, filename string, output string) error {
 	var buf []byte
 
 	err := chromedp.Run(ctx,
+		chromedp.EmulateViewport(1400, 900,
+			chromedp.EmulateScale(2.0), // retina quality
+		),
+
 		chromedp.Navigate(htmlURL),
 		chromedp.Sleep(500*time.Millisecond),
+
 		chromedp.FullScreenshot(&buf, 100),
 	)
 
