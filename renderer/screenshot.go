@@ -9,14 +9,14 @@ import (
 	"github.com/chromedp/chromedp"
 )
 
-func RenderToImage(codeHTML string, output string) error {
+func RenderToImage(codeHTML string, filename string, output string) error {
 	ctx, cancel := chromedp.NewContext(context.Background())
 	defer cancel()
 
 	ctx, cancel = context.WithTimeout(ctx, 15*time.Second)
 	defer cancel()
 
-	fullHTML := wrapHTML(codeHTML)
+	fullHTML := wrapHTML(codeHTML, filename)
 
 	htmlURL := "data:text/html;charset=utf-8," + url.PathEscape(fullHTML)
 
@@ -24,10 +24,7 @@ func RenderToImage(codeHTML string, output string) error {
 
 	err := chromedp.Run(ctx,
 		chromedp.Navigate(htmlURL),
-
-		// Let Chrome render fonts & layout
 		chromedp.Sleep(500*time.Millisecond),
-
 		chromedp.FullScreenshot(&buf, 100),
 	)
 
@@ -38,7 +35,7 @@ func RenderToImage(codeHTML string, output string) error {
 	return os.WriteFile(output, buf, 0644)
 }
 
-func wrapHTML(codeHTML string) string {
+func wrapHTML(codeHTML string, filename string) string {
 	html := `<!DOCTYPE html>
 <html lang="en">
 <head>
@@ -54,7 +51,6 @@ func wrapHTML(codeHTML string) string {
 			align-items: flex-start;
 			font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", monospace;
 			margin: 0;
-			border-radius: 20px;
 		}
 
 		/* Mac-style window container */
@@ -62,7 +58,7 @@ func wrapHTML(codeHTML string) string {
 			background: #1e1e1e;
 			border-radius: 20px;
 			box-shadow: 0 20px 40px rgba(0,0,0,0.45);
-			overflow: hidden;
+			overflow: visible;
 			display: inline-block;
 			min-width: 400px;
 		}
@@ -75,6 +71,12 @@ func wrapHTML(codeHTML string) string {
 			align-items: center;
 			padding: 0 14px;
 			border-radius: 20px 20px 0 0;
+			position: relative;
+		}
+
+		.dots {
+			display: flex;
+			align-items: center;
 		}
 
 		.dot {
@@ -87,6 +89,18 @@ func wrapHTML(codeHTML string) string {
 		.red { background: #ff5f56; }
 		.yellow { background: #ffbd2e; }
 		.green { background: #27c93f; }
+
+		/* Filename in center */
+		.filename {
+			position: absolute;
+			left: 50%;
+			transform: translateX(-50%);
+			font-size: 13px;
+			color: #d1d5db;
+			opacity: 0.9;
+			white-space: nowrap;
+			user-select: none;
+		}
 
 		/* Content area for code */
 		.content {
@@ -112,9 +126,12 @@ func wrapHTML(codeHTML string) string {
 <body>
 	<div class="window">
 		<div class="titlebar">
-			<div class="dot red"></div>
-			<div class="dot yellow"></div>
-			<div class="dot green"></div>
+			<div class="dots">
+				<div class="dot red"></div>
+				<div class="dot yellow"></div>
+				<div class="dot green"></div>
+			</div>
+			<div class="filename">` + filename + `</div>
 		</div>
 		<div class="content">
 			` + codeHTML + `

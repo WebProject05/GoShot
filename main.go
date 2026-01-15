@@ -11,7 +11,7 @@ import (
 func main() {
 	filename := "extractor.go"
 	startLine := 1
-	endLine := 40
+	endLine := 25
 	theme := "dracula"
 	outputImage := "output.png"
 
@@ -35,7 +35,7 @@ func main() {
 		log.Fatal(err)
 	}
 
-	err = renderer.RenderToImage(html, outputImage)
+	err = renderer.RenderToImage(html, filename, outputImage)
 	if err != nil {
 		log.Fatal(err)
 	}
