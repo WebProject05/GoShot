@@ -45,8 +45,8 @@ func HighlightToHTML(
 
 	// Formatting the HTML of the extracted code
 	formatter := html.New(
-		html.WithLineNumbers(true),
-		html.WithClasses(true),  // This is for the css
+		html.WithLineNumbers(false),
+		html.WithClasses(false),  // This is for the css
 	)
 
 	var buf bytes.Buffer

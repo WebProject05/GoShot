@@ -3,6 +3,8 @@ package main
 import (
 	"fmt"
 	"goshot/extractor"
+	"goshot/renderer"
+	"os"
 )
 
 func main() {
@@ -35,5 +37,19 @@ func main() {
 	}
 
 	fmt.Println("Detected language:", lang)
+
+
+	html, err := renderer.HighlightToHTML(
+		result.Lines,
+		lang,
+		"dracula",
+	)
+
+	if err != nil {
+		panic(err)
+	}
+
+	os.WriteFile("output.html", []byte(html), 0644)
+	fmt.Println("Html code has been generated.")
 
 }
