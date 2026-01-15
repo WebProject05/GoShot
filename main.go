@@ -2,54 +2,44 @@ package main
 
 import (
 	"fmt"
+	"log"
+
 	"goshot/extractor"
 	"goshot/renderer"
-	"os"
 )
 
 func main() {
 	filename := "extractor.go"
 	startLine := 1
 	endLine := 40
+	theme := "dracula"
+	outputImage := "output.png"
 
 	result, err := extractor.ExtractCode(filename, startLine, endLine)
 	if err != nil {
-		panic(err)
+		log.Fatal(err)
 	}
-
-	fmt.Println("Total lines in file:", result.TotalLines)
-	fmt.Printf("Extracted lines (%d → %d):\n\n", result.StartLine, result.EndLine)
-
-	for i, line := range result.Lines {
-		fmt.Printf("%4d | %s\n", result.StartLine+i, line)
-	}
-
-	fmt.Println("\nExtractor working perfectly.")
 
 	path, err := extractor.ResolveFilePath(filename)
 	if err != nil {
-		panic(err)
+		log.Fatal(err)
 	}
 
 	lang, err := extractor.DetectLanguage(path)
 	if err != nil {
-		panic(err)
+		log.Fatal(err)
 	}
 
-	fmt.Println("Detected language:", lang)
-
-
-	html, err := renderer.HighlightToHTML(
-		result.Lines,
-		lang,
-		"dracula",
-	)
-
+	html, err := renderer.HighlightToHTML(result.Lines, lang, theme)
 	if err != nil {
-		panic(err)
+		log.Fatal(err)
 	}
 
-	os.WriteFile("output.html", []byte(html), 0644)
-	fmt.Println("Html code has been generated.")
+	err = renderer.RenderToImage(html, outputImage)
+	if err != nil {
+		log.Fatal(err)
+	}
 
+	fmt.Printf("GoShot screenshot generated: %s (%s lines %d→%d)\n",
+		outputImage, lang, result.StartLine, result.EndLine)
 }
