@@ -5,26 +5,44 @@ import (
 	"log"
 	"path/filepath"
 
+	"goshot/cmd"
 	"goshot/extractor"
 	"goshot/internal/split"
 	"goshot/renderer"
 )
 
-const MaxLinesPerImage = 80   // Can be modified using the commands (later)
+const MaxLinesPerImage = 80 // default split size (used only when --split is enabled)
+
+// normalizeOutputName ensures a valid PNG output name
+func normalizeOutputName(output string) (base string, ext string) {
+	ext = filepath.Ext(output)
+
+	// Default to .png if no extension
+	if ext == "" {
+		return output, ".png"
+	}
+
+	// Enforce PNG only (v1)
+	if ext != ".png" {
+		log.Fatalf("Unsupported output format: %s (only .png supported)", ext)
+	}
+
+	base = output[:len(output)-len(ext)]
+	return
+}
 
 func main() {
-	filename := `file.cpp`
-	startLine := 1
-	endLine := 300
-	theme := "dracula"
-	outputImage := "output.png"
+	cfg, err := cmd.ParseArgs()
+	if err != nil {
+		cmd.ExitWithError(err)
+	}
 
-	result, err := extractor.ExtractCode(filename, startLine, endLine)
+	result, err := extractor.ExtractCode(cfg.File, cfg.StartLine, cfg.EndLine)
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	path, err := extractor.ResolveFilePath(filename)
+	path, err := extractor.ResolveFilePath(cfg.File)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -34,21 +52,28 @@ func main() {
 		log.Fatal(err)
 	}
 
-	chunks := split.ChunkLines(result.Lines, MaxLinesPerImage)
-	totalParts := len(chunks)
+	var chunks [][]string
+	if cfg.Split {
+		chunks = split.ChunkLines(result.Lines, MaxLinesPerImage)
+	} else {
+		chunks = [][]string{result.Lines}
+	}
 
-	baseName := filepath.Base(filename)
+	totalParts := len(chunks)
+	baseName := filepath.Base(cfg.File)
+
+	baseOutput, ext := normalizeOutputName(cfg.Output)
 
 	for i, chunk := range chunks {
 		part := i + 1
 
-		output := outputImage
+		// Output filename
+		output := baseOutput + ext
 		if totalParts > 1 {
-			ext := filepath.Ext(outputImage)
-			name := outputImage[:len(outputImage)-len(ext)]
-			output = fmt.Sprintf("%s_%d%s", name, part, ext)
+			output = fmt.Sprintf("%s_%d%s", baseOutput, part, ext)
 		}
 
+		// Header title
 		header := baseName
 		if totalParts > 1 {
 			header = fmt.Sprintf("%s • Part %d / %d", baseName, part, totalParts)
@@ -56,7 +81,7 @@ func main() {
 
 		fmt.Printf("[%d/%d] Generating image...\n", part, totalParts)
 
-		html, err := renderer.HighlightToHTML(chunk, lang, theme)
+		html, err := renderer.HighlightToHTML(chunk, lang, cfg.Theme)
 		if err != nil {
 			log.Fatal(err)
 		}
@@ -68,7 +93,7 @@ func main() {
 	}
 
 	fmt.Printf(
-		"Done. Generated %d image(s) (%s lines %d→%d)\n",
+		"✔ Done. Generated %d image(s) (%s lines %d→%d)\n",
 		totalParts,
 		lang,
 		result.StartLine,
