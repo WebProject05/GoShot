@@ -1,157 +1,163 @@
-GoShot
+﻿# GoShot
 
-GoShot is a command-line tool that converts source code into high-quality, shareable screenshots directly from the terminal.
+A command-line tool that converts source code into high-quality, shareable screenshots directly from the terminal.
 
-It’s built for developers who want beautiful code images without opening browsers or GUI tools.
+Built for developers who want beautiful code images without opening browsers or GUI tools.
 
-What GoShot Does (Current Capabilities)
+##  Features
 
-Syntax highlighting using Chroma
+- **Syntax Highlighting** — Powered by Chroma with multiple theme options
+- **macOS-style Window Frame** — Professional appearance for your code
+- **Language Support** — All programming languages & .txt files  
+- **Code Splitting** — Automatically split large files into multiple images
+- **Language Detection** — Automatic syntax detection based on file type
+- **Headless Rendering** — No visible browser window required
+- **High-Resolution Output** — Generate sharp PNG images for any resolution
 
-macOS-style window frame
+##  Quick Start
 
-upports programming languages & .txt files
+### Basic Usage
 
-Optional splitting for large code blocks
+Generate a screenshot of an entire file:
 
-Automatic language detection
-
-Headless rendering (no visible browser)
-
-Generates high-resolution PNG images
-
-Usage
-Basic usage
+`bash
 goshot <file>
+`
 
+### Capture a Specific Range
 
-Generates a screenshot of the entire file.
-
-Capture a specific line range
+`bash
 goshot <file> 10 120
+`
 
-Specify output filename
+### Specify Output Filename
+
+`bash
 goshot <file> -o output.png
+`
 
-Split large code into multiple images
+### Split Large Code Blocks
+
+`bash
 goshot <file> 1 400 --split
-
+`
 
 Output:
-
-output_1.png
-output_2.png
-output_3.png
-
+- output_1.png
+- output_2.png
+- output_3.png
 
 Each image contains a portion of the code with a clean header.
 
-Choose a syntax theme
+### Choose a Syntax Theme
+
+`bash
 goshot <file> --theme monokai
+`
 
-Command Syntax
+##  Command Reference
+
+### Syntax
+
+`
 goshot <file> [start] [end] [flags]
+`
 
-Positional arguments
-Argument	Description
-<file>	Source code file
-[start]	Start line (optional)
-[end]	End line (optional)
-Supported Flags
-Flag	Description
--o, --output	Output image name
---theme	Syntax highlighting theme
---split	Split output into multiple images
---help	Show help text
+### Positional Arguments
 
-(Other flags are internally supported but not yet exposed or finalized.)
+| Argument | Description |
+|----------|-------------|
+| <file> | Source code file |
+| [start] | Start line (optional) |
+| [end] | End line (optional) |
 
-Themes
+### Supported Flags
 
-GoShot supports all themes provided by Chroma.
+| Flag | Description |
+|------|-------------|
+| -o, --output | Output image name |
+| --theme | Syntax highlighting theme |
+| --split | Split output into multiple images |
+| --help | Show help text |
 
-Commonly used themes
+*Note: Other flags are internally supported but not yet exposed or finalized.*
 
-dracula (default)
+##  Themes
 
-monokai
+GoShot supports all themes provided by [Chroma](https://github.com/alecthomas/chroma).
 
-github-dark
+### Popular Themes
 
-github-dark-dimmed
+- dracula (default)
+- monokai
+- github-dark
+- github-dark-dimmed
+- 	okyonight
+- 
+ord
+- one-dark
 
-tokyonight
+### Example
 
-nord
-
-one-dark
-
-Example:
-
+`bash
 goshot main.go --theme dracula
+`
 
-How GoShot Works
+##  How It Works
 
-Resolves the input file path
+GoShot follows this pipeline:
 
-Extracts the requested lines
-
-Detects the programming language
-
-Applies syntax highlighting
-
-Wraps the code in a macOS-style window
-
-Renders the output using a headless browser
-
-Saves the result as a PNG image
+1. Resolves the input file path
+2. Extracts the requested lines
+3. Detects the programming language
+4. Applies syntax highlighting
+5. Wraps the code in a macOS-style window
+6. Renders the output using a headless browser
+7. Saves the result as a PNG image
 
 Everything runs locally.
 
-Image Sharing Note
+##  Supported File Types
+
+- Programming language source files (via Chroma)
+- .txt files
+
+Binary or unsupported file types are rejected.
+
+##  Image Sharing Tips
 
 Some platforms (like WhatsApp) compress images aggressively.
 
 For best quality:
+- Send generated images as **Documents**, not Images
 
-Send generated images as Documents, not Images
+##  Output Behavior
 
-Output Behavior
-Single image
+### Single Image
+
+`
 file.png
+`
 
-Split output
+### Split Output
+
+`
 file_1.png
 file_2.png
 file_3.png
-
+`
 
 Each image includes:
+- Filename in the title bar
+- Part indicator when split is enabled
 
-Filename in the title bar
+##  Project Status
 
-Part indicator when split is enabled
-
-🛠 Supported Files
-
-Programming language source files (via Chroma)
-
-.txt files
-
-Binary or unsupported file types are rejected.
-
-Project Status
-
-Current state:
-
-Core rendering pipeline: complete
-
-CLI commands: implemented
-
-Split logic: implemented
-
-Loader/progress messages: implemented
-
-Documentation: in progress
-
-Distribution: not yet published
+| Component | Status |
+|-----------|--------|
+| Core rendering pipeline |  Complete |
+| CLI commands |  Complete |
+| Split logic |  Complete |
+| Loader/progress messages |  Complete |
+| Documentation |  In Progress |
+| Distribution |  Not Yet Published |
