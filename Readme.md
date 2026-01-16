@@ -156,7 +156,7 @@ Each image includes:
 | Component | Status |
 |-----------|--------|
 | Core rendering pipeline |  Complete |
-| CLI commands |  Complete |
+| CLI commands |  In Progess |
 | Split logic |  Complete |
 | Loader/progress messages |  Complete |
 | Documentation |  In Progress |
